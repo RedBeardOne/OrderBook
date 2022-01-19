@@ -45,54 +45,8 @@ class MainTest {
     @Test
     @DisplayName("best ask & bid()")
     void getBest() {
-        Book book = new Book();
-        var processor = new Processor() {
-            @Override
-            public void processOrder(String s) {
-                Pattern pattern = Pattern.compile("o,(buy|sell),\\d+");
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    String[] split = s.split(",");
-                    int length = split.length;
-                    if (matcher.group(1).equals("buy")) {
-                        book.buy(Integer.parseInt(split[length - 1]));
-                    } else {
-                        book.sell(Integer.parseInt(split[length - 1]));
-                    }
-                }
-            }
-
-            @Override
-            public void processUpdate(String s) {
-                Pattern pattern = Pattern.compile("u,\\d+,\\d+,(ask|bid)");
-                Matcher matcher = pattern.matcher(s);
-                String[] array;
-                if (matcher.find()) {
-                    array = matcher.group(0).split(",");
-                    book.update(Integer.parseInt(array[1]), Integer.parseInt(array[2]), Type.getType(array[3]));
-                } else {
-                    System.out.println("No such element");
-                }
-            }
-
-            @Override
-            public String processQuery(String s) {
-                Pattern pattern = Pattern.compile("_");
-                String[] split = pattern.split(s);
-                String rez = "";
-                for (String s1 : split) {
-                    if (s1.equals("bid") || s1.equals("ask")) {
-                        return book.queryBest(Type.getType(s1));
-                    }
-                }
-                Pattern patternInt = Pattern.compile("\\d+");
-                Matcher match = patternInt.matcher(s);
-                if (match.find()) {
-                    return book.queryByPrice(Integer.parseInt(match.group()));
-                }
-                return rez;
-            }
-        };
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
 
         processor.processLine("u,20,5,ask");
         processor.processLine("u,21,10,ask");
@@ -113,54 +67,8 @@ class MainTest {
     @Test
     @DisplayName("sell")
     void insertBidOrder(){
-        Book book = new Book();
-        var processor = new Processor() {
-            @Override
-            public void processOrder(String s) {
-                Pattern pattern = Pattern.compile("o,(buy|sell),\\d+");
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    String[] split = s.split(",");
-                    int length = split.length;
-                    if (matcher.group(1).equals("buy")) {
-                        book.buy(Integer.parseInt(split[length - 1]));
-                    } else {
-                        book.sell(Integer.parseInt(split[length - 1]));
-                    }
-                }
-            }
-
-            @Override
-            public void processUpdate(String s) {
-                Pattern pattern = Pattern.compile("u,\\d+,\\d+,(ask|bid)");
-                Matcher matcher = pattern.matcher(s);
-                String[] array;
-                if (matcher.find()) {
-                    array = matcher.group(0).split(",");
-                    book.update(Integer.parseInt(array[1]), Integer.parseInt(array[2]), Type.getType(array[3]));
-                } else {
-                    System.out.println("No such element");
-                }
-            }
-
-            @Override
-            public String processQuery(String s) {
-                Pattern pattern = Pattern.compile("_");
-                String[] split = pattern.split(s);
-                String rez = "";
-                for (String s1 : split) {
-                    if (s1.equals("bid") || s1.equals("ask")) {
-                        return book.queryBest(Type.getType(s1));
-                    }
-                }
-                Pattern patternInt = Pattern.compile("\\d+");
-                Matcher match = patternInt.matcher(s);
-                if (match.find()) {
-                    return book.queryByPrice(Integer.parseInt(match.group()));
-                }
-                return rez;
-            }
-        };
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
         processor.processLine("u,22,15,ask");
         processor.processLine("u,21,10,ask");
         processor.processLine("u,20,5,ask");
@@ -185,54 +93,8 @@ class MainTest {
     @Test
     @DisplayName("removeAllOrders()")
     void removeAllOrders(){
-        Book book = new Book();
-        var processor = new Processor() {
-            @Override
-            public void processOrder(String s) {
-                Pattern pattern = Pattern.compile("o,(buy|sell),\\d+");
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    String[] split = s.split(",");
-                    int length = split.length;
-                    if (matcher.group(1).equals("buy")) {
-                        book.buy(Integer.parseInt(split[length - 1]));
-                    } else {
-                        book.sell(Integer.parseInt(split[length - 1]));
-                    }
-                }
-            }
-
-            @Override
-            public void processUpdate(String s) {
-                Pattern pattern = Pattern.compile("u,\\d+,\\d+,(ask|bid)");
-                Matcher matcher = pattern.matcher(s);
-                String[] array;
-                if (matcher.find()) {
-                    array = matcher.group(0).split(",");
-                    book.update(Integer.parseInt(array[1]), Integer.parseInt(array[2]), Type.getType(array[3]));
-                } else {
-                    System.out.println("No such element");
-                }
-            }
-
-            @Override
-            public String processQuery(String s) {
-                Pattern pattern = Pattern.compile("_");
-                String[] split = pattern.split(s);
-                String rez = "";
-                for (String s1 : split) {
-                    if (s1.equals("bid") || s1.equals("ask")) {
-                        return book.queryBest(Type.getType(s1));
-                    }
-                }
-                Pattern patternInt = Pattern.compile("\\d+");
-                Matcher match = patternInt.matcher(s);
-                if (match.find()) {
-                    return book.queryByPrice(Integer.parseInt(match.group()));
-                }
-                return rez;
-            }
-        };
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
 
         processor.processLine("u,20,5,ask");
         processor.processLine("u,21,10,ask");
@@ -250,54 +112,8 @@ class MainTest {
 
     @Test
     void addedThreeAsk_shouldReturnBestNonZeroAsk_processQuery(){
-        Book book = new Book();
-        var processor = new Processor() {
-            @Override
-            public void processOrder(String s) {
-                Pattern pattern = Pattern.compile("o,(buy|sell),\\d+");
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    String[] split = s.split(",");
-                    int length = split.length;
-                    if (matcher.group(1).equals("buy")) {
-                        book.buy(Integer.parseInt(split[length - 1]));
-                    } else {
-                        book.sell(Integer.parseInt(split[length - 1]));
-                    }
-                }
-            }
-
-            @Override
-            public void processUpdate(String s) {
-                Pattern pattern = Pattern.compile("u,\\d+,\\d+,(ask|bid)");
-                Matcher matcher = pattern.matcher(s);
-                String[] array;
-                if (matcher.find()) {
-                    array = matcher.group(0).split(",");
-                    book.update(Integer.parseInt(array[1]), Integer.parseInt(array[2]), Type.getType(array[3]));
-                } else {
-                    System.out.println("No such element");
-                }
-            }
-
-            @Override
-            public String processQuery(String s) {
-                Pattern pattern = Pattern.compile("_");
-                String[] split = pattern.split(s);
-                String rez = "";
-                for (String s1 : split) {
-                    if (s1.equals("bid") || s1.equals("ask")) {
-                        return book.queryBest(Type.getType(s1));
-                    }
-                }
-                Pattern patternInt = Pattern.compile("\\d+");
-                Matcher match = patternInt.matcher(s);
-                if (match.find()) {
-                    return book.queryByPrice(Integer.parseInt(match.group()));
-                }
-                return rez;
-            }
-        };
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
 
         processor.processLine("u,99,0,ask");
         processor.processLine("u,98,50,ask");
@@ -314,54 +130,8 @@ class MainTest {
     @Test
     @DisplayName("insertMiddleOrder1()")
     void insertMiddleOrder1() {
-        Book book = new Book();
-        var processor = new Processor() {
-            @Override
-            public void processOrder(String s) {
-                Pattern pattern = Pattern.compile("o,(buy|sell),\\d+");
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    String[] split = s.split(",");
-                    int length = split.length;
-                    if (matcher.group(1).equals("buy")) {
-                        book.buy(Integer.parseInt(split[length - 1]));
-                    } else {
-                        book.sell(Integer.parseInt(split[length - 1]));
-                    }
-                }
-            }
-
-            @Override
-            public void processUpdate(String s) {
-                Pattern pattern = Pattern.compile("u,\\d+,\\d+,(ask|bid)");
-                Matcher matcher = pattern.matcher(s);
-                String[] array;
-                if (matcher.find()) {
-                    array = matcher.group(0).split(",");
-                    book.update(Integer.parseInt(array[1]), Integer.parseInt(array[2]), Type.getType(array[3]));
-                } else {
-                    System.out.println("No such element");
-                }
-            }
-
-            @Override
-            public String processQuery(String s) {
-                Pattern pattern = Pattern.compile("_");
-                String[] split = pattern.split(s);
-                String rez = "";
-                for (String s1 : split) {
-                    if (s1.equals("bid") || s1.equals("ask")) {
-                        return book.queryBest(Type.getType(s1));
-                    }
-                }
-                Pattern patternInt = Pattern.compile("\\d+");
-                Matcher match = patternInt.matcher(s);
-                if (match.find()) {
-                    return book.queryByPrice(Integer.parseInt(match.group()));
-                }
-                return rez;
-            }
-        };
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
 
         processor.processLine("u,22,15,ask");
         processor.processLine("u,21,10,ask");
@@ -377,7 +147,7 @@ class MainTest {
 
         processor.processLine("u,9,30,ask");
 
-        assertEquals("9,10", processor.processQuery("q,best_ask"));
+        assertEquals("9,30", processor.processQuery("q,best_ask"));
     }
 
 

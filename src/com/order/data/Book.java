@@ -17,6 +17,7 @@ public class Book {
         if (type == Type.Asker) {
             return accounts.keySet().stream()
                     .filter(account -> account.getType().equals(Type.Asker))
+                    .filter(account -> accounts.get(account)>0)
                     .min(Comparator.comparing(Account::getPrice))
                     .map(account -> {
                         int price = account.getPrice();
@@ -101,48 +102,38 @@ public class Book {
     private void updateBider(int price, Type type, int quantity) {
         Account acc = accounts.keySet().stream()   //here comes Asker
                 .filter(account -> account.getType().equals(Type.Bider))
+                .filter(y -> y.getPrice() == price)
                 .max(Comparator.comparing(Account::getPrice))
-                .filter(y -> y.getPrice() >= price).orElse(null);
+                .orElse(null);
         if (acc == null) {
             accounts.put(new Account(price, type), quantity);
             return;
         }
-        int integer = accounts.get(acc) - quantity;
-        if (integer < 0) {
-            int rest = Math.abs(integer);
+        if (acc.getPrice() == price) {
             accounts.remove(acc);
-            updateBider(price, type, rest);
-        } else if (integer == 0) {
-            accounts.remove(acc);
-        } else {
-            accounts.put(acc, accounts.get(acc) - quantity);
+            update(price, quantity, type);
         }
     }
 
     private void updateAskers(int price, Type type, int quantity) {
         Account acc = accounts.keySet().stream()   //here comes Bider
                 .filter(account -> account.getType().equals(Type.Asker))
+                .filter(y -> y.getPrice() == price)
                 .min(Comparator.comparing(Account::getPrice))
-                .filter(y -> y.getPrice() <= price)
+                .filter(y -> y.getPrice() == price)
                 .orElse(null);
         if (acc == null) {
             accounts.put(new Account(price, type), quantity);
             return;
         }
-        int integer = accounts.get(acc) - quantity;
-        if (integer < 0) {
+        if (acc.getPrice() == price) {
             accounts.remove(acc);
-            int rest = Math.abs(integer);
-            updateAskers(price, type, rest);
-        } else if (integer == 0) {
-            accounts.remove(acc);
-        } else {
-            accounts.put(acc, accounts.get(acc) - quantity);
+            update(price, quantity, type);
         }
     }
 
     private void updateQuantity(int quantity, Account account) {
-        accounts.put(account, accounts.get(account) + quantity);
+        accounts.put(account, quantity);
     }
 
 }
