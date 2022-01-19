@@ -20,7 +20,7 @@ public abstract class Processor {
         source.flatMap(this::processLine).forEach(drain);
     }
 
-    Stream<String> processLine(String s) {
+   public Stream<String> processLine(String s) {
         String res = null;
         switch (s.charAt(0)) {
             case 'q' -> res = processQuery(s);

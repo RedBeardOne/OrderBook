@@ -1,8 +1,7 @@
 package com.order.data;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
+
 
 public class Book {
     private Map<Account, Integer> accounts = new TreeMap<>((o1, o2) -> Integer.compare(o2.getPrice(), o1.getPrice()));
@@ -24,7 +23,7 @@ public class Book {
                         int quantity = accounts.get(account);
                         return String.format("%d,%d", price, quantity);
                     })
-                    .orElse("0,0");
+                    .orElse("0");
         } else {
             return accounts.keySet().stream()
                     .filter(account -> account.getType().equals(Type.Bider))
@@ -34,7 +33,7 @@ public class Book {
                         int quantity = accounts.get(account);
                         return String.format("%d,%d", price, quantity);
                     })
-                    .orElse("0,0");
+                    .orElse("0");
         }
     }
 
@@ -145,4 +144,5 @@ public class Book {
     private void updateQuantity(int quantity, Account account) {
         accounts.put(account, accounts.get(account) + quantity);
     }
+
 }
