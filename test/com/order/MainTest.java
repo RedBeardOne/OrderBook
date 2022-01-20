@@ -150,6 +150,29 @@ class MainTest {
         assertEquals("9,30", processor.processQuery("q,best_ask"));
     }
 
+    @Test
+    @DisplayName("insertMiddleOrder2()")
+    void insertMiddleOrder2() {
+        var book = new Book();
+        Processor processor = new BookProcessor(book);
+
+        processor.processLine("u,22,15,ask");
+        processor.processLine("u,21,10,ask");
+        processor.processLine("u,20,5,ask");
+
+        processor.processLine("u,23,10,bid");
+        var res = processor.processQuery("q,best_ask");
+        assertEquals("20,5", res);
+
+        processor.processLine("u,10,5,bid");
+        processor.processLine("u,9,10,bid");
+        processor.processLine("u,8,15,bid");
+
+        processor.processLine("u,5,10,ask");
+
+        assertEquals("23,10", processor.processQuery("q,best_bid"));
+    }
+
 
 
 }
